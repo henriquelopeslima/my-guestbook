@@ -9,13 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ConferenceController extends AbstractController
 {
-    #[Route('/', name: 'homepage')]
-    public function index(Request $request): Response
+    #[Route(['/', '/hello/{name}'], name: 'homepage')]
+    public function index(Request $request, string $name = null): Response
     {
-        $greet = '';
-        if ($name = $request->query->get('hello')) {
-            $greet = sprintf('<h1>Hello %s!</h1>', htmlspecialchars($name));
-        }
+        $greet = $this->getHello($name ?? $request->query->get('hello') ?? '');
+
         return new Response(<<<EOF
             <html>
                 <body>
@@ -25,5 +23,10 @@ class ConferenceController extends AbstractController
             </html>
             EOF
         );
+    }
+
+    private function getHello(?string $name = null): ?string
+    {
+        return is_null($name) ? '' : sprintf('<h1>Hello %s!</h1>', htmlspecialchars($name));
     }
 }

@@ -16,8 +16,6 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        // return parent::index();
-
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
         $url = $routeBuilder->setController(ConferenceCrudController::class)->generateUrl();
         return $this->redirect($url);
@@ -40,15 +38,24 @@ class DashboardController extends AbstractDashboardController
         // return $this->render('some/path/my-dashboard.html.twig');
     }
 
+    #[Route('/admin/doc', 'admin_doc')]
+    public function doc(): Response
+    {
+         return parent::index();
+    }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('My Guestbook');
+            ->setTitle('My Guestbook')
+            ->setLocales([
+                'en' => '🇬🇧 English',
+                'br' => '🇧🇷 Português'
+            ]);
     }
 
     public function configureMenuItems(): iterable
     {
-//        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
         yield MenuItem::linkToCrud('Conferences', 'fas fa-map-marker-alt', Conference::class);
         yield MenuItem::linkToCrud('Comments', 'fas fa-comments', Comment::class);
